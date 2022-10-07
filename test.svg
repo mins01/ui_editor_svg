@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="300" fill="gray">
+<defs>
+<g id="g-asset-02">
+    <text x="0" y="20" style="font-size: 20px;">나</text>
+</g>
+</defs>
+<rect x="50" y="50" width="50" height="50" fill="red" stroke="blue" transform="rotate(-10, 50, 100)"></rect>
+<text x="50" y="50" fill="red" stroke="blue" stroke-width="2" style="font-size:30px;font-weight:bold">테스트값</text>
+<g id="g100">
+<text x="50" y="50" fill="red" stroke="blue" stroke-width="2" style="font-size: 30px; font-weight: bold;">테스트값</text>
+</g>
+<use href="#g100" x="100" y="100">
+</use>
+<g id="g-asset-01">
+<text x="0" y="20" style="font-size: 20px;">가</text>
+</g>
+<use href="#g-asset-02" x="200" y="200">
+</use>
+</svg>

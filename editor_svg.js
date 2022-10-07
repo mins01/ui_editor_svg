@@ -1,5 +1,5 @@
 import SvgEditor from './assets/SvgEditor.js'
-globalThis.svgeditor = new SvgEditor()
-svgeditor.debug = true;
-svgeditor.init(document.querySelector('#svgbox'));
-svgeditor.test();
+globalThis.svgEditor = new SvgEditor()
+svgEditor.debug = true;
+svgEditor.init(document.querySelector('#svgbox'));
+svgEditor.test();
