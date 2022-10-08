@@ -172,6 +172,12 @@ class SvgEditor{
     }
     appendUse(id,x,y){
         let target = document.querySelector('#'+id).cloneNode(true);
+        target.removeAttribute('id');
+        console.log(target);
+        // this.attrs(target,{
+        //     'x':x,
+        //     'y':y,
+        // })
         this.svg.append(target);
         return;
 

@@ -47,22 +47,49 @@
 <body>
 	<div class="container">
 		<div id="svgbox">
-
-		</div>
-		<div >
-			<button type="button" class="btn btn-success" onclick="svgEditor.downloadPng()">download</button>
-			<button type="button" class="btn btn-success" onclick="svgEditor.appendUse('g-asset-01',100,200)" >
-				<svg width="20" height="20">
+			<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="300" fill="gray">
+				<style>
+					.use-tranfrom{
+						--translate-x:0px;
+						--translate-y:0px;
+						--rotate:0deg;
+						transform: translate(var(--translate-x) , var(--translate-y)) rotate(var(--rotate));
+						transform-origin: center;
+						transform-box: fill-box
+					}
+				</style>
+				<defs>
 					<g id="g-asset-01">
 						<text x="0" y="20" style="font-size: 20px;">가</text>
 					</g>
-				</svg>
-			</button>
-			<button type="button" class="btn btn-success" onclick="svgEditor.appendUse2('g-asset-02',200,200)" >
-				<svg width="20" height="20">
 					<g id="g-asset-02">
 						<text x="0" y="20" style="font-size: 20px;">나</text>
 					</g>
+				</defs>
+				<rect x="50" y="50" width="50" height="50" fill="red" stroke="blue" transform="rotate(-10, 50, 100)"></rect>
+				<text x="50" y="50" fill="red" stroke="blue" stroke-width="2" style="font-size:30px;font-weight:bold">테스트값</text>
+				<g id="g100">
+					<text x="50" y="50" fill="red" stroke="blue" stroke-width="2" style="font-size: 30px; font-weight: bold;">테스트값</text>
+				</g>
+				<use xlink:href="#g100" href="#g100" class="use-tranfrom" >
+				</use>
+				<g id="g-asset-01">
+					<text x="0" y="20" style="font-size: 20px;">가</text>
+				</g>
+				<use xlink:href="#g-asset-02" href="#g-asset-02" class="use-tranfrom" style="--translate-x:100px; --translate-y:150px; --rotate:30deg">
+				</use>
+			</svg>
+		</div>
+		<div >
+			<button type="button" class="btn btn-success" onclick="svgEditor.downloadPng()">download</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor.appendUse('g-asset-01',150,250)" >
+				<svg width="20" height="20">
+					<use href="#g-asset-01">
+				</svg>
+			</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor.appendUse2('g-asset-02',250,250)" >
+				<svg width="20" height="20">
+					<use href="#g-asset-02">
 				</svg>
 			</button>
 			<button type="button" class="btn btn-success" onclick="svgEditor.downloadPng()">download</button>
