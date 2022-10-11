@@ -197,10 +197,11 @@ class SvgEditor{
     }
     appendUse2(id,x,y){
         let use = document.createElementNS(this.svgns, "use");
+        
         this.attrs(use,{
             'href':'#'+id,
-            'x':x,
-            'y':y,
+            'x':0,
+            'y':0,
             // 'width':'50',
             // 'height':'50',
             // 'fill':'red',
@@ -208,6 +209,9 @@ class SvgEditor{
             // 'transform':"rotate(-10, 50, 100) translate(-36 45.5) skewX(40) scale(1 0.5)",
             // 'transform':"rotate(-10, 50, 100)",
         })
+        use.classList.add('tf-target')
+        use.style.setProperty('--translate-x',x+'px');
+        use.style.setProperty('--translate-y',y+'px');
         this.svg.append(use);
     }
 

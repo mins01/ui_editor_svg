@@ -36,6 +36,38 @@
 	<meta property="og:type" content="website">
 	
 	<!-- //meta og -->
+
+
+	<link rel="stylesheet" href="../ui_transformer/transformer.css">
+	
+	<script src="../ui_transformer/Transformer.js"></script>
+	<script>
+		let tf01 = null;
+		window.addEventListener('load',(event)=>{
+			tf01  = new Transformer();
+			tf01.debug = true;
+
+			tf01.minScale = 0.2; // 20%
+			tf01.maxScale = 3; // 300% 
+			tf01.minRotate = -180; 
+			tf01.maxRotate = 180;
+
+			tf01.init(document.querySelector('#tf01'));
+			tf01.initAutoSet();
+			// tf01.target = document.querySelector('#tfTarget');
+			
+			// 추가 메소드
+			tf01.textAnchor = function(event){
+			this.stopevent(event);
+			let textAnchor = event.target.dataset.textAnchor;
+			this.target.setAttribute('text-anchor',textAnchor)
+			this.syncGuide();
+		}			
+		})
+
+	</script>
+
+
 	<script type="module" src="assets/SvgEditor.js"></script>
 	<!-- <script type="module">
 		import SvgEditor from './assets/SvgEditor.js'
@@ -43,44 +75,70 @@
 	</script> -->
 	<script type="module" src="editor_svg.js"></script>
 	
+
+
+
 </head>
 <body>
 	<div class="container">
+		<h1>editor svg</h1>
 		<div id="svgbox">
-			<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="300" fill="gray">
+			<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="300" fill="gray" x="0" y="0" viewBox="0 0 300 300" class="tf-target-area" style="border:1px solid #000; box-sizing:content-box">
 				<style>
-					.use-tranfrom{
+					.tf-target{
 						--translate-x:0px;
 						--translate-y:0px;
-						--rotate:0deg;
-						transform: translate(var(--translate-x) , var(--translate-y)) rotate(var(--rotate));
+						--scale-x:1;
+						--scale-y:1;
+						--rotate:0;
+						--rotate-y:0;
+						--border:2px dashed #abc;
+						transform-box: fill-box;
 						transform-origin: center;
-						transform-box: fill-box
-					}
+						transform: translate(var(--translate-x,0) , var(--translate-y,0)) scale(var(--scale-x,0),var(--scale-y,0)) rotateY(var(--rotate-y,0)) rotate(var(--rotate,0))   ;
+						font-size: 14px;
+					  }
+					.
 				</style>
 				<defs>
 					<g id="g-asset-01">
-						<text x="0" y="20" style="font-size: 20px;">가</text>
+						<text x="0" dy="1em" style="font-size: 20px;">가</text>
 					</g>
-					<g id="g-asset-02">
-						<text x="0" y="20" style="font-size: 20px;">나</text>
+					<g id="g-asset-02" >
+						<text x="0" dy="1em" style="font-size: 20px;">나</text>
 					</g>
 				</defs>
-				<rect x="50" y="50" width="50" height="50" fill="red" stroke="blue" transform="rotate(-10, 50, 100)"></rect>
-				<text x="50" y="50" fill="red" stroke="blue" stroke-width="2" style="font-size:30px;font-weight:bold">테스트값</text>
+				<rect  x="50" y="50" width="50" height="50" class="tf-target" fill="red" stroke="blue" transform="rotate(-10, 50, 100)"></rect>
+				<text x="50" y="50" fill="red" stroke="blue" class="tf-target" stroke-width="2" style="font-size:30px;font-weight:bold">테스트값</text>
 				<g id="g100">
-					<text x="50" y="50" fill="red" stroke="blue" stroke-width="2" style="font-size: 30px; font-weight: bold;">테스트값</text>
+					<text x="0" y="0" dy="1em" fill="red" stroke="blue" alignment-baseline="text-top" stroke-width="2" style="font-size: 30px; font-weight: bold;">테스트값</text>
 				</g>
-				<use xlink:href="#g100" href="#g100" class="use-tranfrom" >
+				<use xlink:href="#g100" href="#g100" class="tf-target" >
 				</use>
-				<g id="g-asset-01">
+				<g id="g-asset-01" class="tf-target"> 
 					<text x="0" y="20" style="font-size: 20px;">가</text>
 				</g>
-				<use xlink:href="#g-asset-02" href="#g-asset-02" class="use-tranfrom" style="--translate-x:100px; --translate-y:150px; --rotate:30deg">
+				<use xlink:href="#g-asset-02" href="#g-asset-02" class="tf-target" style="--translate-x:100px; --translate-y:150px; --rotate:30deg">
 				</use>
-			</svg>
+				<text dy="20" text-anchor="middle" class="tf-target" id="svg-text" style="--translate-x:100px; --translate-y:150px; --rotate:30deg" data-target-ext-tools="">
+					<tspan >text를 선택하면 정렬이 표기됩니다.</tspan>
+					<tspan  >테스트</tspan>
+				</text>
+				<g class="tf-target"  style="--translate-x:100px; --translate-y:150px; --rotate:30deg" data-target-ext-tools="">
+					<rect x="0" y="0" width="200px" height="40" fill="#eee"></rect>
+					<text x="0" y="0" dx="1em" dy="1em" text-anchor="start" >
+						<tspan x="0" y="0" dx="1em" dy="1em"  id="svg-text-01">text를 선택하면 정렬이 표기됩니다.</tspan>
+						<tspan x="0" y="0" dx="1em" dy="2em"  id="svg-text-02">테스트</tspan>
+					</text>
+				</g>
+				<text x="20" y="35" class="small">My</text>
+				<text x="40" y="35" class="heavy">cat</text>
+				<text x="55" y="55" class="small">is</text>
+				<text x="65" y="55" class="Rrrrr">Grumpy!</text>
+			</svg>	
 		</div>
 		<div >
+			<textarea type="text" class="form-control"  oninput="document.querySelector('#svg-text-01').textContent = this.value;">테스트입니다.</textarea>
 			<button type="button" class="btn btn-success" onclick="svgEditor.downloadPng()">download</button>
 			<button type="button" class="btn btn-success" onclick="svgEditor.appendUse('g-asset-01',150,250)" >
 				<svg width="20" height="20">
@@ -100,6 +158,37 @@
 		</div>
 		<div>
 			<img width="300" height="300" src="test.svg">
+		</div>
+	</div>
+
+
+
+	<div class="tf-container" id="tf01" >
+		<div class="tf-guide" data-transform="translate">
+			
+		</div>
+		<div class="tf-tool">
+			<div class="tf-btn-group tf-btn-group-roate">
+				<button class="tf-btn tf-btn-transform" title="회전 -15°"  data-rotate-by="-15">↶</button>
+				<button class="tf-btn tf-btn-transform" title="회전 초기화"  data-rotate-to="0">0°</button>
+				<button class="tf-btn tf-btn-transform" title="좌우반전"  data-rotate-y-toggle="1">◫</button>
+				<button class="tf-btn tf-btn-transform" title="회전 +15°"  data-rotate-by="15">↷</button>
+			</div>
+			<div class="tf-btn-group tf-btn-group-scale">
+				<button class="tf-btn tf-btn-transform" title="축소"  data-scale-by="-0.1">－</button>
+				<button class="tf-btn tf-btn-transform" title="1:1"  data-scale-to="1">1:1</button>
+				<button class="tf-btn tf-btn-transform" title="확디"  data-scale-by="0.1">＋</button>
+			</div>
+			<div class="tf-btn-group tf-btn-group-order">
+				<button class="tf-btn tf-btn-transform" title="뒤로"  data-order="1">↧</button>
+				<button class="tf-btn tf-btn-transform" title="앞으로"  data-order="-1">↥</button>
+			</div>
+			<!-- 사용시 주의 tf-target-area의 위치 제한 계산 어렵네-->
+			<div class="tf-btn-group tf-btn-group-ext tf-btn-group-text-anchor">
+				<button class="tf-btn tf-btn-transform" title="왼쪽 정렬" data-text-anchor="start">왼쪽</button>
+				<button class="tf-btn tf-btn-transform" title="가운데 정렬" data-text-anchor="middle" >가운데</button>
+				<button class="tf-btn tf-btn-transform" title="오른쪽 정렬" data-text-anchor="end" >오른쪽</button>
+			</div>
 		</div>
 	</div>
 </body>
