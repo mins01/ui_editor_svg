@@ -18,9 +18,34 @@ class SvgEditor{
         this.zoom = 1;
         this.rootNode = null
         this.svg = null
-        this.svgns = "http://www.w3.org/2000/svg";
+        this.svgNS = "http://www.w3.org/2000/svg";
+        this.xlinkNS = 'http://www.w3.org/1999/xlink'
 
     }
+
+    init(rootNode){
+        if(this.debug) console.log('init',Array.from(arguments).join(','))
+        this.rootNode = rootNode;
+        rootNode.svgEditor = this;
+        let svg = this.rootNode.querySelector('svg');
+        if(!svg){
+            alert('SVG 포함되지 않았습니다.');
+            return false;
+        }
+        this.svg = svg
+    }
+
+    attrs(node,attrs){
+        for(let k in attrs){
+            node.setAttribute(k,attrs[k])
+        }
+    }
+    styles(node,styles){
+        for(let k in styles){
+            node.style[k]= styles[k]
+        }
+    }
+
     toImageElement(cb){
         
         let img = new Image();
@@ -56,163 +81,68 @@ class SvgEditor{
         }
         this.toImageElement(cb);
     }
-    init(rootNode){
-        if(this.debug) console.log('init',Array.from(arguments).join(','))
-        this.rootNode = rootNode;
-        rootNode.svgEditor = this;
-        let svg = this.rootNode.querySelector('svg');
-        if(!svg){
-            // svg = document.createElement('svg');
-            svg = document.createElementNS(this.svgns, "svg");
-            svg.setAttribute('xmlns',this.svgns);
-            svg.setAttribute('version',1.1);
-            svg.setAttribute('width','300');
-            svg.setAttribute('height','300');
-            // svg.setAttribute('viewBox','0 0 300 300');
-            svg.setAttribute('fill','gray');
-            this.rootNode.append(svg);
-            if(this.debug) console.log('init # generated svg',Array.from(arguments).join(','))
+    imgToDataUrl(img){
+        // Create canvas
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        // Set width and height
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        // Draw the image
+        ctx.drawImage(img, 0, 0);
+        var dataUrl = canvas.toDataURL('image/png');
+        return dataUrl;
+    }
+    syncImgDataUrlToImage(img){
+        if(document.querySelectorAll('image[data-from="#'+img.id+'"]').length==0) return;
+        const dataUrl = this.imgToDataUrl(img);
+        document.querySelectorAll('image[data-from="#'+img.id+'"]').forEach((el)=>{
+            el.setAttribute('href', dataUrl);
+            delete el.dataset.from
+            // el.setAttributeNS(this.xlinkNS, 'href', dataUrl);
+        })
+        
+    }
+    syncImgDataUrl(){ // img.data-from-img 를 가져와서 image[data-from="#'+img.id+'"] 의 href 를 dataURL로 변경한다.
+        document.querySelectorAll('img.data-from-img').forEach((el)=>{
+            this.syncImgDataUrlToImage(el)
+        })
+    }
+    
 
-        }
-        this.svg = svg
+    removeAllTfTarget(){
+        // this.svg.
     }
 
-    test(){
-        // let rect = document.createElement('rect');
-        let rect = document.createElementNS(this.svgns, "rect");
-        this.attrs(rect,{
-            'x':50,
-            'y':50,
-            'width':'50',
-            'height':'50',
-            'fill':'red',
-            'stroke':'blue',
-            // 'transform':"rotate(-10, 50, 100) translate(-36 45.5) skewX(40) scale(1 0.5)",
-            'transform':"rotate(-10, 50, 100)",
+    
+    // attrTransform(node,transform){
+    //     for(let k in attrs){
+    //         node.setAttribute(k,attrs[k])
+    //     }
+    // }
+    appendByClone(el,x,y,tfTarget){
+        let target = el.cloneNode(true);
+        this.attrs(target,{
+            'x':0,
+            'y':0,
         })
-        this.svg.append(rect);
-        let text = document.createElementNS(this.svgns, "text");
-        text.textContent="테스트값"
-        this.attrs(text,{
-            'x':50,
-            'y':50,
-            // 'width':'50',
-            // 'height':'50',
-            'fill':'red',
-            'stroke':'blue',
-            'stroke-width':"2",
-            'style':'font-size:30px;font-weight:bold'
-            // 'transform':"rotate(-10, 50, 100) translate(-36 45.5) skewX(40) scale(1 0.5)",
-            // 'transform':"rotate(-10, 50, 100)",
-        })
-        this.svg.append(text);
-
-        let rect2 = document.createElementNS(this.svgns, "g");
-        this.attrs(rect2,{
-            'id':'g100'
-            // 'x':100,
-            // 'y':100,
-            // 'width':'50',
-            // 'height':'50',
-            // 'fill':'red',
-            // 'stroke':'blue',
-            // 'transform':"rotate(-10, 50, 100) translate(-36 45.5) skewX(40) scale(1 0.5)",
-            // 'transform':"rotate(-10, 50, 100)",
-        })
-        this.svg.append(rect2);
-        let text2 = document.createElementNS(this.svgns, "text");
-        text2.textContent="테스트값"
-        this.attrs(text2,{
-            'x':50,
-            'y':50,
-            // 'width':'50',
-            // 'height':'50',
-            'fill':'red',
-            'stroke':'blue',
-            'stroke-width':"2",
-            // 'style':'font-size:30px;font-weight:bold'
-            // 'transform':"rotate(-10, 50, 100) translate(-36 45.5) skewX(40) scale(1 0.5)",
-            // 'transform':"rotate(-10, 50, 100)",
-        })
-        this.styles(text2,{
-            'fontSize':'30px',
-            'font-weight':'bold',
-        });
-        rect2.append(text2);
-        let use = document.createElementNS(this.svgns, "use");
-        this.attrs(use,{
-            'href':'#g100',
-            'x':100,
-            'y':100,
-            // 'width':'50',
-            // 'height':'50',
-            // 'fill':'red',
-            // 'stroke':'blue',
-            // 'transform':"rotate(-10, 50, 100) translate(-36 45.5) skewX(40) scale(1 0.5)",
-            // 'transform':"rotate(-10, 50, 100)",
-        })
-        this.svg.append(use);
-
-    }
-
-    attrs(node,attrs){
-        for(let k in attrs){
-            node.setAttribute(k,attrs[k])
-        }
-    }
-    styles(node,styles){
-        for(let k in styles){
-            node.style[k]= styles[k]
-        }
-    }
-    attrTransform(node,transform){
-        for(let k in attrs){
-            node.setAttribute(k,attrs[k])
-        }
-    }
-    appendUse(id,x,y){
-        let target = document.querySelector('#'+id).cloneNode(true);
-        target.removeAttribute('id');
-        console.log(target);
-        // this.attrs(target,{
-        //     'x':x,
-        //     'y':y,
-        // })
+        if(tfTarget) target.classList.add('tf-target')
+        target.style.setProperty('--translate-x',x+'px');
+        target.style.setProperty('--translate-y',y+'px');
         this.svg.append(target);
         return;
-
-        let use = document.createElementNS(this.svgns, "use");
-        this.attrs(use,{
-            'href':'#'+id,
-            'x':x,
-            'y':y,
-            // 'width':'50',
-            // 'height':'50',
-            // 'fill':'red',
-            // 'stroke':'blue',
-            // 'transform':"rotate(-10, 50, 100) translate(-36 45.5) skewX(40) scale(1 0.5)",
-            // 'transform':"rotate(-10, 50, 100)",
-        })
-        this.svg.append(use);
     }
-    appendUse2(id,x,y){
-        let use = document.createElementNS(this.svgns, "use");
-        
-        this.attrs(use,{
+    appendByUse(id,x,y,tfTarget){
+        let target = document.createElementNS(this.svgNS, "use");
+        this.attrs(target,{
             'href':'#'+id,
             'x':0,
             'y':0,
-            // 'width':'50',
-            // 'height':'50',
-            // 'fill':'red',
-            // 'stroke':'blue',
-            // 'transform':"rotate(-10, 50, 100) translate(-36 45.5) skewX(40) scale(1 0.5)",
-            // 'transform':"rotate(-10, 50, 100)",
         })
-        use.classList.add('tf-target')
-        use.style.setProperty('--translate-x',x+'px');
-        use.style.setProperty('--translate-y',y+'px');
-        this.svg.append(use);
+        if(tfTarget) target.classList.add('tf-target')
+        target.style.setProperty('--translate-x',x+'px');
+        target.style.setProperty('--translate-y',y+'px');
+        this.svg.append(target);
     }
 
 }
