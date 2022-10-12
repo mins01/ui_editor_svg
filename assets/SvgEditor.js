@@ -21,6 +21,7 @@ class SvgEditor{
         this.svgNS = "http://www.w3.org/2000/svg";
         this.xlinkNS = 'http://www.w3.org/1999/xlink'
 
+
     }
 
     init(rootNode){
@@ -86,14 +87,18 @@ class SvgEditor{
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         // Set width and height
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
+        // canvas.width = img.naturalWidth;
+        // canvas.height = img.naturalHeight;
+        console.log(img.naturalWidth);
+        console.log(img.width);
+        canvas.width = img.width;
+        canvas.height = img.height;
         // Draw the image
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img,0,0,img.naturalWidth,img.naturalHeight, 0, 0 ,img.width,img.height);
         var dataUrl = canvas.toDataURL('image/png');
         return dataUrl;
     }
-    syncImgDataUrlToImage(img){
+    syncFromImgDataUrlToImage(img){
         if(document.querySelectorAll('image[data-from="#'+img.id+'"]').length==0) return;
         const dataUrl = this.imgToDataUrl(img);
         document.querySelectorAll('image[data-from="#'+img.id+'"]').forEach((el)=>{
@@ -103,9 +108,9 @@ class SvgEditor{
         })
         
     }
-    syncImgDataUrl(){ // img.data-from-img 를 가져와서 image[data-from="#'+img.id+'"] 의 href 를 dataURL로 변경한다.
+    syncFromImgDataUrl(){ // img.data-from-img 를 가져와서 image[data-from="#'+img.id+'"] 의 href 를 dataURL로 변경한다.
         document.querySelectorAll('img.data-from-img').forEach((el)=>{
-            this.syncImgDataUrlToImage(el)
+            this.syncFromImgDataUrlToImage(el)
         })
     }
     
@@ -130,7 +135,7 @@ class SvgEditor{
         target.style.setProperty('--translate-x',x+'px');
         target.style.setProperty('--translate-y',y+'px');
         this.svg.append(target);
-        return;
+        return target;
     }
     appendByUse(id,x,y,tfTarget){
         let target = document.createElementNS(this.svgNS, "use");
@@ -143,6 +148,7 @@ class SvgEditor{
         target.style.setProperty('--translate-x',x+'px');
         target.style.setProperty('--translate-y',y+'px');
         this.svg.append(target);
+        return target;
     }
 
 }

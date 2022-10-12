@@ -45,7 +45,7 @@
 		let tf01 = null;
 		window.addEventListener('load',(event)=>{
 			tf01  = new Transformer();
-			tf01.debug = true;
+			// tf01.debug = true;
 
 			tf01.minScale = 0.2; // 20%
 			tf01.maxScale = 3; // 300% 
@@ -56,13 +56,7 @@
 			tf01.initAutoSet();
 			// tf01.target = document.querySelector('#tfTarget');
 			
-			// 추가 메소드
-			tf01.textAnchor = function(event){
-			this.stopevent(event);
-			let textAnchor = event.target.dataset.textAnchor;
-			this.target.setAttribute('text-anchor',textAnchor)
-			this.syncGuide();
-		}			
+			svgEditor.syncFromImgDataUrl()
 		})
 
 	</script>
@@ -86,7 +80,8 @@
 		}
 
 		text{
-			font-size: 40px;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 20px;
 			stroke: #000;
 			fill: #ddd;
 		}
@@ -97,10 +92,17 @@
 <body>
 	<div class="container">
 		<h1>editor svg</h1>
+		<hr>
+		<div class="imgbox" style=" display: none;">
+			<img id="img-logo" class="data-from-img" src="assets/imgs/logo.gif">
+			<img id="img-home" class="data-from-img" width="1000" height="1000" src="assets/imgs/home-svgrepo-com.svg">
+			<img id="img-bone" class="data-from-img" width="1000" height="1000" src="assets/imgs/bone-svgrepo-com.svg">
+		</div>
+		<hr>
+		<h2>EX1 : 300x300</h2>
+		
 		<div id="svgbox" class="svg-wrap">
-			<div class="imgbox">
-				<img id="img-logo" class="data-from-img" src="assets/imgs/logo.gif">
-			</div>
+
 			<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="300" fill="gray" x="0" y="0" viewBox="0 0 300 300" class="tf-target-area" style="border:0px solid #000; box-sizing:content-box">
 				<style>
 					.tf-target{
@@ -117,7 +119,8 @@
 						font-size: 14px;
 					  }
 					text{
-						font-size: 40px;
+						font-family: Arial, Helvetica, sans-serif;
+						font-size: 20px;
 						stroke: #000;
 						fill: #ddd;
 					}
@@ -129,30 +132,15 @@
 						<text x="95" y="0" dy="1em" text-anchor="middle" alignment-baseline="center">use+ID 사용</text>
 					</g>
 				</defs>
-				<rect  x="0" y="0" width="100%" height="100%" fill="#fff" ><![CDATA[ background ]]></rect>
-				
+				<rect  x="0" y="0" width="100%" height="100%" fill="#fff" class="rect-background" ><![CDATA[ background ]]></rect>
+				<text x="0" y="0" dy="1em">스티커를 붙여주세요.</text>
 			</svg>	
 		</div>
 		<div >
-			<button type="button" class="btn btn-success" onclick="svgEditor.downloadPng()">download-PNG</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor.downloadPng('ex1')">download-PNG</button>
 			<button type="button" class="btn btn-success" onclick="svgEditor.toImageElement((img)=>{document.body.append(img)})">add-IMG</button>
 			<hr>
 			스티커 추가
-			<button type="button" class="btn btn-success" onclick="svgEditor.appendByUse('g-asset-01',50,50,true)">
-				<svg width="20" height="20"  >
-					<use href="#g-asset-01">
-				</svg>
-			</button>
-			<button type="button" class="btn btn-success" onclick="svgEditor.appendByUse('g-asset-02',100,100,true)">
-				<svg width="190" height="70"  >
-					<use href="#g-asset-02">
-				</svg>
-			</button>
-			<button type="button" class="btn btn-success" onclick="svgEditor.appendByUse('g-asset-03',110,110,true)">
-				<svg width="190" height="70" viewMode="0 0 190 70"  >
-					<use href="#g-asset-03">
-				</svg>
-			</button>
 			<button type="button" class="btn btn-success" onclick="svgEditor.appendByClone(this.querySelector('svg g'),100,100,true)">
 				<svg width="190" height="70">
 					<g>
@@ -164,6 +152,7 @@
 					</g>
 				</svg>
 			</button>
+			<!-- // 다운로드시 이미지가 안보이므로 사용하지 말라.
 			<button type="button" class="btn btn-success" onclick="svgEditor.appendByClone(this.querySelector('svg g'),100,100,true)">
 				<svg width="190" height="70">
 					<g>
@@ -172,7 +161,7 @@
 						<text x="95" y="0" dy="1em" text-anchor="middle">일반 url 사용</text>
 					</g>
 				</svg>
-			</button>
+			</button> -->
 
 			<button type="button" class="btn btn-success" onclick="svgEditor.appendByClone(this.querySelector('svg g'),100,100,true)">
 				<svg width="190" height="70">
@@ -189,27 +178,186 @@
 					<use href="#g-01"></use>
 				</svg>
 			</button>
-			
+			<script>
+				function appendByClone2(btn){
+					const target = svgEditor.appendByClone(btn.querySelector('svg g'),100,100,true)
+					setTimeout(()=>{
+						tf01.target = target
+						tf01.translateCenter();
+					},100)
+					
+				}
+			</script>
+			<button type="button" class="btn btn-success" onclick="appendByClone2(this)">
+				<svg width="100" height="100">
+					<g>
+						<image x="0" y="0" width="100" height="100"  xlink:href="" data-from="#img-home" >
+						</image>
+						<text x="50" y="40" dy="1em" text-anchor="middle" alignment-baseline="center">ID 사용</text>
+					</g>
+				</svg>
+			</button>
+			<button type="button" class="btn btn-success" onclick="appendByClone2(this)">
+				<svg width="100" height="100">
+					<g>
+						<image x="0" y="0" width="100" height="100"  xlink:href="" data-from="#img-bone" >
+						</image>
+						<text x="50" y="40" dy="1em" text-anchor="middle" alignment-baseline="center">뼈</text>
+					</g>
+				</svg>
+			</button>
+		</div>
+		<hr>
+		<hr>
+		<h2>EX2 : 600x600</h2>
+
+		<script type="module">
+			import SvgEditor from './assets/SvgEditor.js'
+			globalThis.svgEditor2 = new SvgEditor()
+			svgEditor2.debug = true;
+			svgEditor2.init(document.querySelector('#svgbox2'));
+
+
+			// window.addEventListener('load',(event)=>{
+			// 	svgEditor2.syncFromImgDataUrl()
+			// })
+		</script>
+		<div id="svgbox2" class="svg-wrap">
+			<div class="imgbox" style=" display: none;">
+				<img id="img-logo" class="data-from-img" src="assets/imgs/logo.gif">
+				<img id="img-home" class="data-from-img" width="500" height="500" src="assets/imgs/home-svgrepo-com.svg">
+				<img id="img-bone" class="data-from-img" width="500" height="500" src="assets/imgs/bone-svgrepo-com.svg">
+			</div>
+			<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="600" height="600" fill="gray" x="0" y="0" viewBox="0 0 600 600" class="tf-target-area" style="border:0px solid #000; box-sizing:content-box">
+				<style>
+					.tf-target{
+						--translate-x:0px;
+						--translate-y:0px;
+						--scale-x:1;
+						--scale-y:1;
+						--rotate:0;
+						--rotate-y:0;
+						--border:2px dashed #abc;
+						transform-box: fill-box;
+						transform-origin: center;
+						transform: translate(var(--translate-x,0) , var(--translate-y,0)) scale(var(--scale-x,0),var(--scale-y,0)) rotateY(var(--rotate-y,0)) rotate(var(--rotate,0))   ;
+						font-size: 14px;
+					  }
+					text{
+						font-family: Arial, Helvetica, sans-serif;
+						font-size: 20px;
+						stroke: #000;
+						fill: #ddd;
+					}
+				</style>
+				<defs>
+					<g id="g-01">
+						<image x="0" y="0" width="190" height="70"  xlink:href="" data-from="#img-logo" >
+						</image>
+						<text x="95" y="0" dy="1em" text-anchor="middle" alignment-baseline="center">use+ID 사용</text>
+					</g>
+				</defs>
+				<rect  x="0" y="0" width="100%" height="100%" fill="#fff" class="rect-background" ><![CDATA[ background ]]></rect>
+				<text x="0" y="0" dy="1em">스티커를 붙여주세요.</text>
+			</svg>	
+		</div>
+		<hr>
+		<div >
+			<button type="button" class="btn btn-success" onclick="svgEditor2.downloadPng('ex2')">download-PNG</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor2.toImageElement((img)=>{document.body.append(img)})">add-IMG</button>
+			<hr>
+			스티커 추가
+			<button type="button" class="btn btn-success" onclick="svgEditor2.appendByClone(this.querySelector('svg g'),100,100,true)">
+				<svg width="190" height="70">
+					<g>
+						
+						<image x="0" y="0" width="190" height="70"  xlink:href="data:image/gif;base64,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">
+						</image>
+						
+						<text x="95" y="0" dy="1em" text-anchor="middle">dataurl 사용</text>
+					</g>
+				</svg>
+			</button>
+			<!-- // 다운로드시 이미지가 안보이므로 사용하지 말라.
+			<button type="button" class="btn btn-success" onclick="svgEditor2.appendByClone(this.querySelector('svg g'),100,100,true)">
+				<svg width="190" height="70">
+					<g>
+						<image x="0" y="0" width="190" height="70"  xlink:href="assets/imgs/logo.gif" >
+						</image>
+						<text x="95" y="0" dy="1em" text-anchor="middle">일반 url 사용</text>
+					</g>
+				</svg>
+			</button> -->
+
+			<button type="button" class="btn btn-success" onclick="svgEditor2.appendByClone(this.querySelector('svg g'),100,100,true)">
+				<svg width="190" height="70">
+					<g>
+						<image x="0" y="0" width="190" height="70"  xlink:href="" data-from="#img-logo" >
+						</image>
+						<text x="95" y="0" dy="1em" text-anchor="middle" alignment-baseline="center">ID 사용</text>
+					</g>
+				</svg>
+			</button>
+
+			<button type="button" class="btn btn-success" onclick="svgEditor2.appendByClone(this.querySelector('svg use'),100,100,true)">
+				<svg width="190" height="70">
+					<use href="#g-01"></use>
+				</svg>
+			</button>
+			<script>
+				function appendByClone(btn){
+					const target = svgEditor2.appendByClone(btn.querySelector('svg g'),-9999,-9999,true)
+					setTimeout(()=>{
+						tf01.target = target
+						tf01.translateCenter();
+					},100)
+					
+				}
+			</script>
+			<button type="button" class="btn btn-success" onclick="appendByClone(this)">
+				<svg width="100" height="100">
+					<g>
+						<image x="0" y="0" width="100" height="100"  xlink:href="" data-from="#img-home" >
+						</image>
+						<text x="50" y="40" dy="1em" text-anchor="middle" alignment-baseline="center">ID 사용</text>
+					</g>
+				</svg>
+			</button>
+			<button type="button" class="btn btn-success" onclick="appendByClone(this)">
+				<svg width="100" height="100">
+					<g>
+						<image x="0" y="0" width="100" height="100"  xlink:href="" data-from="#img-bone" >
+						</image>
+						<text x="50" y="40" dy="1em" text-anchor="middle" alignment-baseline="center">뼈</text>
+					</g>
+				</svg>
+			</button>
 		</div>
 	</div>
 
 
 
 	<div class="tf-container" id="tf01" >
-		<div class="tf-guide" data-transform="translate">
+		<div class="tf-guide">
 			
 		</div>
 		<div class="tf-tool">
 			<div class="tf-btn-group tf-btn-group-roate">
-				<button class="tf-btn tf-btn-transform" title="회전 -15°"  data-rotate-by="-15">↶</button>
+				<button class="tf-btn tf-btn-transform" title="회전 -15°"  data-rotate-by="-15">⟲</button>
 				<button class="tf-btn tf-btn-transform" title="회전 초기화"  data-rotate-to="0">0°</button>
+				<button class="tf-btn tf-btn-transform" title="회전 +15°"  data-rotate-by="15">⟳</button>
 				<button class="tf-btn tf-btn-transform" title="좌우반전"  data-rotate-y-toggle="1">◫</button>
-				<button class="tf-btn tf-btn-transform" title="회전 +15°"  data-rotate-by="15">↷</button>
 			</div>
 			<div class="tf-btn-group tf-btn-group-scale">
 				<button class="tf-btn tf-btn-transform" title="축소"  data-scale-by="-0.1">－</button>
 				<button class="tf-btn tf-btn-transform" title="1:1"  data-scale-to="1">1:1</button>
-				<button class="tf-btn tf-btn-transform" title="확디"  data-scale-by="0.1">＋</button>
+				<button class="tf-btn tf-btn-transform" title="확대"  data-scale-by="0.1">＋</button>
+			</div>
+			
+			<div class="tf-btn-group tf-btn-group-order">
+				<button class="tf-btn tf-btn-transform" title="리셋"  data-translate-center="1" data-scale-to="1" data-rotate-to="0">🗘</button>
+				<!-- <button class="tf-btn tf-btn-transform" title="삭제"  data-remove="1" onclick="if(!confirm('삭제할까요?')) return false;">⦻</button> -->
+				<button class="tf-btn " title="삭제"   onclick="if(confirm('삭제할까요?')){tf01.remove();}">⨂</button>
 			</div>
 			<div class="tf-btn-group tf-btn-group-order">
 				<button class="tf-btn tf-btn-transform" title="뒤로"  data-order="1">↧</button>
