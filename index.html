@@ -118,7 +118,7 @@
 						transform: translate(var(--translate-x,0) , var(--translate-y,0)) scale(var(--scale-x,0),var(--scale-y,0)) rotateY(var(--rotate-y,0)) rotate(var(--rotate,0))   ;
 						font-size: 14px;
 					  }
-					text{
+					text , .text{
 						font-family: Arial, Helvetica, sans-serif;
 						font-size: 20px;
 						stroke: #000;
@@ -143,9 +143,16 @@
 					
 				</defs>
 				<rect  x="0" y="0" width="100%" height="100%" fill="#fff" class="rect-background" ><![CDATA[ background ]]></rect>
-				<text x="0" y="0" dy="1em">스티커를 붙여주세요.</text>
+				<text x="0" y="40" dy="1em">스티커를 붙여주세요.</text>
+				<g>
+					<foreignObject x="0" y="0" width="150" height="200">
+						<div class="text" xmlns="http://www.w3.org/1999/xhtml">HTML 태그를 사용한 자동 줄 바꿈 HTML 태그를 사용한 자동 줄 바꿈</div>
+					</foreignObject>
+				</g>
+
 				<g class="tf-target">
 					<rect
+					class="tf-target-bound"
 					style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.521663;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;marker-start:url(#Arrow1Lstart);marker-mid:url(#Arrow1Mend);paint-order:stroke fill markers"
 					id="rect1043"
 					width="163.99536"
@@ -359,14 +366,14 @@
 
 
 	<div class="tf-container" id="tf01" >
-		<div class="tf-guide">
+		<div class="tf-guide" >
 			
 		</div>
 		<div class="tf-tool">
 			<div class="tf-btn-group tf-btn-group-roate">
-				<button class="tf-btn tf-btn-transform" title="회전 -15°"  data-rotate-by="-15">⟲</button>
-				<button class="tf-btn tf-btn-transform" title="회전 초기화"  data-rotate-to="0">0°</button>
-				<button class="tf-btn tf-btn-transform" title="회전 +15°"  data-rotate-by="15">⟳</button>
+				<button class="tf-btn tf-btn-transform" title="회전 -15°"  data-rotate-by="-15">⤹</button>
+				<button class="tf-btn tf-btn-transform" title="회전 초기화"  data-rotate-to="0">⟲</button>
+				<button class="tf-btn tf-btn-transform" title="회전 +15°"  data-rotate-by="15">⤸</button>
 				<button class="tf-btn tf-btn-transform" title="좌우반전"  data-rotate-y-toggle="1">◫</button>
 			</div>
 			<div class="tf-btn-group tf-btn-group-scale">
@@ -376,7 +383,7 @@
 			</div>
 			
 			<div class="tf-btn-group tf-btn-group-order">
-				<button class="tf-btn tf-btn-transform" title="리셋"  data-translate-center="1" data-scale-to="1" data-rotate-to="0">🗘</button>
+				<button class="tf-btn tf-btn-transform" title="리셋(가운데, 1;1크기, 0도)"  data-translate-center="1" data-scale-to="1" data-rotate-to="0">✛</button>
 				<!-- <button class="tf-btn tf-btn-transform" title="삭제"  data-remove="1" onclick="if(!confirm('삭제할까요?')) return false;">⦻</button> -->
 				<button class="tf-btn " title="삭제"   onclick="if(confirm('삭제할까요?')){tf01.remove();}">⨂</button>
 			</div>

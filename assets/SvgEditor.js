@@ -46,20 +46,39 @@ class SvgEditor{
             node.style[k]= styles[k]
         }
     }
-
+    buildSvgImageUrl(svg) {
+        let b64 = window.btoa(svg);
+        return "data:image/svg+xml;base64," + b64;
+    }
+    blobToBase64(blob) {
+        return new Promise((resolve, _) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+      }
     toImageElement(cb){
         
         let img = new Image();
+        img.crossOrigin="anonymous"
         let data = new XMLSerializer().serializeToString(this.svg);
         let blob = new Blob([data], { type: 'image/svg+xml' });
-        console.log(blob,data);
-        let url = URL.createObjectURL(blob);
+        // console.log(blob,data);
+        // let url = URL.createObjectURL(blob);
+
         img.onload = (event)=>{
-            URL.revokeObjectURL(url);
+            // URL.revokeObjectURL(url);
             cb(img);
             document.body.append(img);
         }
-        img.src = url;
+
+        let url =  this.blobToBase64(blob).then((dataUrl)=>{
+            // console.log(dataUrl);
+            img.src = dataUrl;
+        });
+        // console.log(url);return
+        
+        
     }
     downloadPng(filename){
         const cb = (img)=>{
@@ -89,8 +108,8 @@ class SvgEditor{
         // Set width and height
         // canvas.width = img.naturalWidth;
         // canvas.height = img.naturalHeight;
-        console.log(img.naturalWidth);
-        console.log(img.width);
+        // console.log(img.naturalWidth);
+        // console.log(img.width);
         canvas.width = img.width;
         canvas.height = img.height;
         // Draw the image
