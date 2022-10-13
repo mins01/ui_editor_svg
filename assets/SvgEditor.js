@@ -46,10 +46,6 @@ class SvgEditor{
             node.style[k]= styles[k]
         }
     }
-    buildSvgImageUrl(svg) {
-        let b64 = window.btoa(svg);
-        return "data:image/svg+xml;base64," + b64;
-    }
     blobToBase64(blob) {
         return new Promise((resolve, _) => {
           const reader = new FileReader();
@@ -69,7 +65,7 @@ class SvgEditor{
         img.onload = (event)=>{
             // URL.revokeObjectURL(url);
             cb(img);
-            document.body.append(img);
+            // document.body.append(img);
         }
 
         let url =  this.blobToBase64(blob).then((dataUrl)=>{
