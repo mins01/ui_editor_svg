@@ -59,8 +59,6 @@ class SvgEditor{
         img.crossOrigin="anonymous"
         let data = new XMLSerializer().serializeToString(this.svg);
         let blob = new Blob([data], { type: 'image/svg+xml' });
-        // console.log(blob,data);
-        // let url = URL.createObjectURL(blob);
 
         img.onload = (event)=>{
             // URL.revokeObjectURL(url);
@@ -68,13 +66,14 @@ class SvgEditor{
             // document.body.append(img);
         }
 
-        let url =  this.blobToBase64(blob).then((dataUrl)=>{
+        // error: Uncaught DOMException: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported.
+        // let url = URL.createObjectURL(blob);
+        // img.src = url
+
+        this.blobToBase64(blob).then((dataUrl)=>{
             // console.log(dataUrl);
             img.src = dataUrl;
-        });
-        // console.log(url);return
-        
-        
+        });        
     }
     downloadPng(filename){
         const cb = (img)=>{
