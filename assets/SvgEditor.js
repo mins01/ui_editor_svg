@@ -9,7 +9,7 @@
  * https://developer.mozilla.org/ko/docs/Web/SVG/Tutorial/Getting_Started 를 참고하면서 만듬
  */
 
-class SvgEditor{
+ class SvgEditor{
     constructor() {
         // super();
         this.debug = false;
@@ -52,7 +52,7 @@ class SvgEditor{
           reader.onloadend = () => resolve(reader.result);
           reader.readAsDataURL(blob);
         });
-      }
+    }
     toImageElement(cb){
         
         let img = new Image();
@@ -74,6 +74,18 @@ class SvgEditor{
             // console.log(dataUrl);
             img.src = dataUrl;
         });        
+    }
+    toBlob(arg_cb){
+        const cb = (img)=>{
+            let canvas = document.createElement('canvas');
+            canvas.width = this.svg.getAttribute('width');
+            canvas.height = this.svg.getAttribute('height');
+
+            canvas.getContext('2d').drawImage(img, 0, 0);
+            // let uri = canvas.toDataURL('image/png').replace('image/png', 'octet/stream');
+            canvas.toBlob((blob)=>{ arg_cb(blob) },'image/png')
+        }
+        this.toImageElement(cb);
     }
     downloadPng(filename){
         const cb = (img)=>{
