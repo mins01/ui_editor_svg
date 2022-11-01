@@ -139,6 +139,23 @@
             this.syncFromImgDataUrlToImage(el)
         })
     }
+    syncFromSvgToSvg(object){
+        // const xml_svg = object.contentDocument.firstElementChild.outerHTML
+        const xml_svg = object.contentDocument.firstElementChild.innerHTML
+        // console.log(object.contentDocument);
+        if(document.querySelectorAll('svg[data-from-svg="#'+object.id+'"]').length==0) return;
+        document.querySelectorAll('svg[data-from-svg="#'+object.id+'"]').forEach((el)=>{
+            el.innerHTML = xml_svg;
+            delete el.dataset.fromSvg
+            // el.setAttributeNS(this.xlinkNS, 'href', dataUrl);
+        })
+    }
+    syncFromSvg(){
+        document.querySelectorAll('object.data-from-svg').forEach((el)=>{
+            this.syncFromSvgToSvg(el)
+        })
+
+    }
     
 
     removeAllTfTarget(){
