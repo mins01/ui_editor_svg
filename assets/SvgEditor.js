@@ -28,7 +28,13 @@
         if(this.debug) console.log('init',Array.from(arguments).join(','))
         this.rootNode = rootNode;
         rootNode.svgEditor = this;
-        let svg = this.rootNode.querySelector('svg');
+        console.log('x',this.rootNode.contentDocument);
+        let svg;
+        if(this.rootNode.contentDocument){ //object 등으로 불러온 경우
+            svg = this.rootNode.contentDocument.querySelector('svg');
+        }else{
+            svg = this.rootNode.querySelector('svg');
+        }
         if(!svg){
             alert('SVG 포함되지 않았습니다.');
             return false;
@@ -125,9 +131,9 @@
         return dataUrl;
     }
     syncFromImgDataUrlToImage(img){
-        if(document.querySelectorAll('image[data-from="#'+img.id+'"]').length==0) return;
+        if(this.svg.querySelectorAll('image[data-from="#'+img.id+'"]').length==0) return;
         const dataUrl = this.imgToDataUrl(img);
-        document.querySelectorAll('image[data-from="#'+img.id+'"]').forEach((el)=>{
+        this.svg.querySelectorAll('image[data-from="#'+img.id+'"]').forEach((el)=>{
             el.setAttribute('href', dataUrl);
             delete el.dataset.from
             // el.setAttributeNS(this.xlinkNS, 'href', dataUrl);
@@ -143,8 +149,8 @@
         // const xml_svg = object.contentDocument.firstElementChild.outerHTML
         const xml_svg = object.contentDocument.firstElementChild.innerHTML
         // console.log(object.contentDocument);
-        if(document.querySelectorAll('svg[data-from-svg="#'+object.id+'"]').length==0) return;
-        document.querySelectorAll('svg[data-from-svg="#'+object.id+'"]').forEach((el)=>{
+        if(this.svg.querySelectorAll('svg[data-from-svg="#'+object.id+'"]').length==0) return;
+        this.svg.querySelectorAll('svg[data-from-svg="#'+object.id+'"]').forEach((el)=>{
             el.innerHTML = xml_svg;
             delete el.dataset.fromSvg
             // el.setAttributeNS(this.xlinkNS, 'href', dataUrl);

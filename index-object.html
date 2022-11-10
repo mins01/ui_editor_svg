@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ko" >
+<head>
+	<title>editor_svg</title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<script src="/js/ForGoogle.js"></script>
+	<!-- google analytics -->
+	<script>if(window.ForGoogle){ ForGoogle.analytics() }else{ console.log("failure : ForGoogle.analytics()");}</script>
+	
+
+	<!-- jquery 관련 -->
+	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+	<!-- 부트스트랩 4 : IE8지원안됨! -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous"> 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script> 
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
+	<!-- vue.js -->
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	
+	<!-- meta og -->
+	
+	<meta property="og:title" content="editor_svg">
+	<meta property="og:description" content="editor_svg">
+	<meta name="og:image" content="http://www.mins01.com/img/logo.gif">
+	<meta property="og:image:width" content="190">
+	<meta property="og:image:height" content="70" />
+	<meta property="og:site_name" content="editor_svg" />
+	<meta property="og:type" content="website">
+	
+	<!-- //meta og -->
+
+
+	<link rel="stylesheet" href="../ui_transformer/transformer.css">
+	
+	<script src="../ui_transformer/Transformer.js"></script>
+	<script>
+		let tf01 = null;
+		window.addEventListener('load',(event)=>{
+			tf01  = new Transformer();
+			// tf01.debug = true;
+
+			tf01.minScale = 0.2; // 20%
+			tf01.maxScale = 3; // 300% 
+			tf01.minRotate = -180; 
+			tf01.maxRotate = 180;
+
+			tf01.init(document.querySelector('#tf01'));
+			tf01.initAutoSet();
+			// tf01.target = document.querySelector('#tfTarget');
+			
+			// svgEditor.syncFromImgDataUrl()
+			// svgEditor.syncFromSvg()
+		})
+
+	</script>
+
+
+	<script type="module" src="assets/SvgEditor.js"></script>
+	<script type="module">
+		import SvgEditor from './assets/SvgEditor.js'
+		globalThis.svgEditor = new SvgEditor()
+	</script>
+	<!-- <script type="module" src="editor_svg.js"></script> -->
+	
+	<style>
+		.svg-wrap{
+			background-color: #eee;
+			padding:5px;
+		}
+		.svg-wrap svg{
+			display: block;
+			margin:0 auto;
+		}
+
+		text{
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 20px;
+			stroke: #000;
+			fill: #ddd;
+		}
+	</style>
+
+
+</head>
+<body>
+	<div class="container">
+		<h1>editor svg - object로 불러오기</h1>
+		<h2>외부에서 object속 svg를 단순하게 접근할 수가 없음. 그래서 use 사용이 힘듬</h2>
+		<h2>파일이 외부에 있어서 캐시가 가능하고, SNS의 og:image 등의 크롤링에 용량 문제가 없음(트위터의 경우 로봇이 용량 크면 안가져감)</h2>
+		<hr>
+		<div class="imgbox" style=" display: none;">
+			<img id="img-logo" class="data-from-img" src="assets/imgs/logo.gif">
+			<img id="img-home" class="data-from-img" width="1000" height="1000" src="assets/imgs/home-svgrepo-com.svg">
+			<img id="img-bone" class="data-from-img" width="1000" height="1000" src="assets/imgs/bone-svgrepo-com.svg">
+		</div>
+		<object id="svg-bone"  class="data-from-svg"  type="image/svg+xml" data="assets/imgs/bone-svgrepo-com.svg" class="object" width="100" height="100"></object>
+		
+		<hr>
+		<h2>EX1 : 300x300</h2>
+		
+		<object id="svgbox" class="svg-wrap" data="assets/imgs/main.svg" type="image/svg+xml" onload="loaded_object_svg(this)" ></object>
+		<script>
+			function loaded_object_svg(object_svg){
+				console.log('loaded_object_svg')
+				svgEditor.debug = true;
+				svgEditor.init(document.querySelector('#svgbox'));
+				
+				svgEditor.syncFromImgDataUrl()
+				svgEditor.syncFromSvg()
+			}
+			window.addEventListener('load',(evnet)=>{
+				console.log('window.load')
+
+				svgEditor.syncFromImgDataUrl()
+				svgEditor.syncFromSvg()
+			})
+			
+		</script>
+		<div >
+			<button type="button" class="btn btn-success" onclick="svgEditor.downloadPng('ex1')">download-PNG</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor.toBlob((blob)=>{console.log('blob',blob)})">toBlob</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor.toImageElement((img)=>{document.body.append(img)})">add-IMG</button>
+			<hr>
+
+
+			<button type="button" class="btn btn-success" onclick="svgEditor.appendByClone(this.querySelector('svg use'),100,100,true)">
+				<svg width="190" height="70">
+					<use href="#g-01"></use>
+				</svg>
+			</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor.appendByClone(this.querySelector('svg use'),100,100,true)">
+				defs 속 image가 data-from 사용<br>
+				<svg width="100" height="100">
+					<use href="#g-02"></use>
+				</svg>
+			</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor.appendByClone(this.querySelector('svg use'),100,100,true)">
+				defs 속 svg 사용<br>
+				<svg width="100" height="100">
+					<use href="#g-03"></use>
+				</svg>
+			</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor.appendByClone(this.querySelector('svg use'),100,100,true)">
+				defs 속 image가 외부 svg 사용<br>(이미지 다운로드시 안보임!)<br>
+				<svg width="100" height="100">
+					<use href="#g-04"></use>
+				</svg>
+			</button>
+			<button type="button" class="btn btn-success" onclick="svgEditor.appendByClone(this.querySelector('svg use'),100,100,true)">
+				defs 속 g가 외부 object의 svg xml을 사용<br>
+				<svg width="100" height="100">
+					<use href="#g-05"></use>
+				</svg>
+			</button>
+
+		</div>
+		
+	</div>
+
+
+
+	<div class="tf-container" id="tf01" >
+		<div class="tf-guide" >
+			
+		</div>
+		<div class="tf-tool">
+			<div class="tf-btn-group tf-btn-group-roate">
+				<button class="tf-btn tf-btn-transform" title="회전 -15°"  data-rotate-by="-15">⤹</button>
+				<button class="tf-btn tf-btn-transform" title="회전 초기화"  data-rotate-to="0">⟲</button>
+				<button class="tf-btn tf-btn-transform" title="회전 +15°"  data-rotate-by="15">⤸</button>
+				<button class="tf-btn tf-btn-transform" title="좌우반전"  data-rotate-y-toggle="1">◫</button>
+			</div>
+			<div class="tf-btn-group tf-btn-group-scale">
+				<button class="tf-btn tf-btn-transform" title="축소"  data-scale-by="-0.1">－</button>
+				<button class="tf-btn tf-btn-transform" title="1:1"  data-scale-to="1">1:1</button>
+				<button class="tf-btn tf-btn-transform" title="확대"  data-scale-by="0.1">＋</button>
+			</div>
+			
+			<div class="tf-btn-group tf-btn-group-order">
+				<button class="tf-btn tf-btn-transform" title="리셋(가운데, 1;1크기, 0도)"  data-translate-center="1" data-scale-to="1" data-rotate-to="0">✛</button>
+				<!-- <button class="tf-btn tf-btn-transform" title="삭제"  data-remove="1" onclick="if(!confirm('삭제할까요?')) return false;">⦻</button> -->
+				<button class="tf-btn " title="삭제"   onclick="if(confirm('삭제할까요?')){tf01.remove();}">⨂</button>
+			</div>
+			<div class="tf-btn-group tf-btn-group-order">
+				<button class="tf-btn tf-btn-transform" title="뒤로"  data-order="1">↧</button>
+				<button class="tf-btn tf-btn-transform" title="앞으로"  data-order="-1">↥</button>
+			</div>
+			<!-- 사용시 주의 tf-target-area의 위치 제한 계산 어렵네-->
+			<div class="tf-btn-group tf-btn-group-ext tf-btn-group-text-anchor">
+				<button class="tf-btn tf-btn-transform" title="왼쪽 정렬" data-text-anchor="start">왼쪽</button>
+				<button class="tf-btn tf-btn-transform" title="가운데 정렬" data-text-anchor="middle" >가운데</button>
+				<button class="tf-btn tf-btn-transform" title="오른쪽 정렬" data-text-anchor="end" >오른쪽</button>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
