@@ -28,7 +28,6 @@
         if(this.debug) console.log('init',Array.from(arguments).join(','))
         this.rootNode = rootNode;
         rootNode.svgEditor = this;
-        console.log('x',this.rootNode.contentDocument);
         let svg;
         if(this.rootNode.contentDocument){ //object 등으로 불러온 경우
             svg = this.rootNode.contentDocument.querySelector('svg');
