@@ -20,6 +20,7 @@
         this.svg = null
         this.svgNS = "http://www.w3.org/2000/svg";
         this.xlinkNS = 'http://www.w3.org/1999/xlink'
+        this.toImageElementDelay = 500;  //사라리의 경우 svg 그려지기전 img 가 onload를 발생시켜서 문제가 된다.
 
 
     }
@@ -62,12 +63,16 @@
         
         let img = new Image();
         img.crossOrigin="anonymous"
-        let data = new XMLSerializer().serializeToString(this.svg);
+        let data = (new XMLSerializer()).serializeToString(this.svg);
         let blob = new Blob([data], { type: 'image/svg+xml' });
 
         img.onload = (event)=>{
+            console.log('img.onload');
+            // document.body.append(img)
             // URL.revokeObjectURL(url);
-            cb(img);
+            setTimeout(()=>{ // 아이폰이 느려서 SVG 재 계산에 이슈가 있는 듯
+                cb(img);
+            },this.toImageElementDelay)
             // document.body.append(img);
         }
 
@@ -76,6 +81,7 @@
         // img.src = url
 
         this.blobToBase64(blob).then((dataUrl)=>{
+            console.log('base64Blob');
             // console.log(dataUrl);
             img.src = dataUrl;
         });        
@@ -88,7 +94,10 @@
 
             canvas.getContext('2d').drawImage(img, 0, 0);
             // let uri = canvas.toDataURL('image/png').replace('image/png', 'octet/stream');
-            canvas.toBlob((blob)=>{ arg_cb(blob) },'image/png')
+            canvas.toBlob((blob)=>{ 
+                console.log('canvas.toBlob',blob)
+                arg_cb(blob) 
+            },'image/png')
         }
         this.toImageElement(cb);
     }
