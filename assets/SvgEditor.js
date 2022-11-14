@@ -86,7 +86,8 @@
             img.src = dataUrl;
         });        
     }
-    toBlob(arg_cb){
+    toBlob(arg_cb,type){
+        if(!type) type = 'image/png'
         const cb = (img)=>{
             let canvas = document.createElement('canvas');
             canvas.width = this.svg.getAttribute('width');
@@ -97,7 +98,7 @@
             canvas.toBlob((blob)=>{ 
                 console.log('canvas.toBlob',blob)
                 arg_cb(blob) 
-            },'image/png')
+            },type)
         }
         this.toImageElement(cb);
     }
