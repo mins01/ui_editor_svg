@@ -102,7 +102,8 @@
         }
         this.toImageElement(cb);
     }
-    downloadPng(filename){
+    downloadImage(filename,type){
+        if(!type) type = 'image/png'
         const cb = (img)=>{
             let canvas = document.createElement('canvas');
             canvas.width = this.svg.getAttribute('width');
@@ -110,18 +111,29 @@
 
             canvas.getContext('2d').drawImage(img, 0, 0);
             // let uri = canvas.toDataURL('image/png').replace('image/png', 'octet/stream');
-            let uri = canvas.toDataURL('image/png');
+            let uri = canvas.toDataURL(type);
             // console.log(uri);
             let a = document.createElement('a');
             a.style.display = 'none';
             document.body.appendChild(a);
             a.href = uri
-            a.download = filename + '.png';
+            // a.download = filename + '.png';
+            a.download = filename;
             a.click();
-            URL.revokeObjectURL(uri);
+            // URL.revokeObjectURL(uri);
             document.body.removeChild(a);
         }
         this.toImageElement(cb);
+    }
+    downloadPng(filename){
+        let type = 'image/png';
+        filename += '.png';
+        return this.downloadImage(filename,type)
+    }
+    downloadJpg(filename){
+        let type = 'image/jpeg';
+        filename + ='.jpg';
+        return this.downloadImage(filename,type)
     }
     imgToDataUrl(img){
         // Create canvas
