@@ -132,7 +132,7 @@
     }
     downloadJpg(filename){
         let type = 'image/jpeg';
-        filename + ='.jpg';
+        filename +='.jpg';
         return this.downloadImage(filename,type)
     }
     imgToDataUrl(img){
