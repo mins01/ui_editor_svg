@@ -9,7 +9,7 @@
  * https://developer.mozilla.org/ko/docs/Web/SVG/Tutorial/Getting_Started 를 참고하면서 만듬
  */
 
- class SvgEditor{
+class SvgEditor{
     constructor() {
         // super();
         this.debug = false;
@@ -70,6 +70,7 @@
             console.log('img.onload');
             // document.body.append(img)
             // URL.revokeObjectURL(url);
+            console.log('toImageElementDelay',this.toImageElementDelay);
             setTimeout(()=>{ // 아이폰이 느려서 SVG 재 계산에 이슈가 있는 듯
                 cb(img);
             },this.toImageElementDelay)
@@ -86,54 +87,53 @@
             img.src = dataUrl;
         });        
     }
-    toBlob(arg_cb,type){
-        if(!type) type = 'image/png'
+    toBlob(arg_cb,image_type){
+        if(!image_type) image_type = 'image/png';
         const cb = (img)=>{
             let canvas = document.createElement('canvas');
             canvas.width = this.svg.getAttribute('width');
             canvas.height = this.svg.getAttribute('height');
 
-            canvas.getContext('2d').drawImage(img, 0, 0);
-            // let uri = canvas.toDataURL('image/png').replace('image/png', 'octet/stream');
-            canvas.toBlob((blob)=>{ 
-                console.log('canvas.toBlob',blob)
-                arg_cb(blob) 
-            },type)
-        }
-        this.toImageElement(cb);
-    }
-    downloadImage(filename,type){
-        if(!type) type = 'image/png'
-        const cb = (img)=>{
-            let canvas = document.createElement('canvas');
-            canvas.width = this.svg.getAttribute('width');
-            canvas.height = this.svg.getAttribute('height');
-
-            canvas.getContext('2d').drawImage(img, 0, 0);
-            // let uri = canvas.toDataURL('image/png').replace('image/png', 'octet/stream');
-            let uri = canvas.toDataURL(type);
-            // console.log(uri);
-            let a = document.createElement('a');
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.href = uri
-            // a.download = filename + '.png';
-            a.download = filename;
-            a.click();
-            // URL.revokeObjectURL(uri);
-            document.body.removeChild(a);
+            let context = canvas.getContext('2d');
+            // 참고 https://stackoverflow.com/questions/69949555/convert-svg-with-image-not-working-in-safari
+            console.log('toImageElementDelay',this.toImageElementDelay);
+            setTimeout(()=>{
+                context.drawImage(img, 0, 0);
+                // let uri = canvas.toDataURL('image/png').replace('image/png', 'octet/stream');
+                canvas.toBlob((blob)=>{ 
+                    console.log('canvas.toBlob',blob)
+                    arg_cb(blob) 
+                },image_type)
+            },this.toImageElementDelay);
         }
         this.toImageElement(cb);
     }
     downloadPng(filename){
-        let type = 'image/png';
-        filename += '.png';
-        return this.downloadImage(filename,type)
-    }
-    downloadJpg(filename){
-        let type = 'image/jpeg';
-        filename +='.jpg';
-        return this.downloadImage(filename,type)
+        const cb = (img)=>{
+            let canvas = document.createElement('canvas');
+            canvas.width = this.svg.getAttribute('width');
+            canvas.height = this.svg.getAttribute('height');
+
+            let context = canvas.getContext('2d');
+            
+            console.log('toImageElementDelay',this.toImageElementDelay);
+            setTimeout(()=>{
+                context.drawImage(img, 0, 0);
+                // let uri = canvas.toDataURL('image/png').replace('image/png', 'octet/stream');
+                let uri = canvas.toDataURL('image/png');
+                // console.log(uri);
+                let a = document.createElement('a');
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.href = uri
+                a.download = filename + '.png';
+                a.click();
+                URL.revokeObjectURL(uri);
+                document.body.removeChild(a);
+            },this.toImageElementDelay);
+            
+        }
+        this.toImageElement(cb);
     }
     imgToDataUrl(img){
         // Create canvas
